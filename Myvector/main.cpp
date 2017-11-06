@@ -3,7 +3,7 @@
 
 int main(void) {
 
-    QTextStream out(stdout);
+    QTextStream out(stdout);//標準輸出
 
     QVector<int> vals = {1, 2, 3, 4, 5,5,5}; //動態容器
 
@@ -19,8 +19,6 @@ int main(void) {
 
     for (int val : vals)//由vals內容長度決定執行幾次，val依vals決定
         out << val << " ";
-
-
     out << endl;
 
     return 0;
