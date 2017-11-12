@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon/back.ico</file>
+        <file>icon/Button-Yellow-icon.png</file>
+    </qresource>
+</RCC>
