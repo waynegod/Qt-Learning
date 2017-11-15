@@ -10,8 +10,13 @@ class Playbutton : public QPushButton
 public:
     explicit Playbutton(QWidget *parent = nullptr);
     static int ID_count;
+    static int ANS_count;
+
     int getID();
+    int answer();
     void addID();
+    void Reset();
+    void answer(int ans);
 
 signals:
 
@@ -19,6 +24,7 @@ public slots:
 
 private:
     int ID_btn = 0;
+    int ANS_back = 0;
 };
 
 #endif // PLAYBUTTON_H
