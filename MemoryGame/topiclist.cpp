@@ -23,17 +23,13 @@ int *Topiclist::get_problem(int lentgh)
         back_problm[n1] = back_problm[con];
         back_problm[con] = temp;
     }
-        /*qDebug()<<
-                   back_problm[0]<<
-                   back_problm[1]<<
-                   back_problm[2]<<
-                   back_problm[3]<<
-                   back_problm[4];*/
+
     return back_problm;
 }
 
 int *Topiclist::get_position(int amount)
 {
+
     qsrand((QDateTime::currentMSecsSinceEpoch() + QDateTime::currentMSecsSinceEpoch()) / 1000);
     static int back_position[25];
     for (int con = 0;con < amount;con++)
@@ -46,9 +42,11 @@ int *Topiclist::get_position(int amount)
         back_position[n1] = back_position[con];
         back_position[con] = temp;
     }
-    /*for (int c = 0;c < 25;c++)
-        qDebug()<<back_position[c];*/
 
+    /*
+    for (int c = 0;c < 25;c++)
+        qDebug()<<back_position[c];
+*/
     return back_position;
 
 }
