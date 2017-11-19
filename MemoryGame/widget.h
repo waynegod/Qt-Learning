@@ -26,13 +26,9 @@ public slots:
     void playtime();
 
 private slots:
-    void on_pushButton_clicked();
-
     void on_pushButton_8_clicked();
 
     void on_pushButton_9_clicked();
-
-    void on_pushButton_11_clicked();
 
     void slotGetNumber();
 
@@ -52,11 +48,13 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_PB_home_play_clicked();
+
 private:
     Ui::Widget *ui;
     QTimer *Timer_play, *Timer_sec;
-
-
+    int font_ID_mvboli;
+    QString font_data_mvboli;
 
 };
 

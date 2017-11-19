@@ -40,3 +40,6 @@ FORMS += \
 CONFIG += mobility
 MOBILITY = 
 
+RESOURCES += \
+    resourcesbox.qrc
+

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QIcon>
 
 class Playbutton : public QPushButton
 {
@@ -11,7 +12,6 @@ public:
     explicit Playbutton(QWidget *parent = nullptr);
     static int ID_count;
     static int ANS_count;
-
     int getID();
     int answer();
     void addID();

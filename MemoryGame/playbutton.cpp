@@ -1,4 +1,5 @@
 #include "playbutton.h"
+#include <QIcon>
 #include <QPushButton>
 #include <QDebug>
 
