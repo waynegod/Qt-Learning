@@ -20,9 +20,20 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);//跳至頁面0
-    Timer_play = new QTimer();
+    Timer_play = new QTimer();//遊戲時間計時器
+    Timer_sec = new QTimer(this);//準備時間計時器
     font_ID_mvboli = QFontDatabase::addApplicationFont(":/fonts/Resourcesbox/mvboli.ttf");
     font_data_mvboli = QFontDatabase::applicationFontFamilies(font_ID_mvboli).at(0);
+}
+
+void Widget::uiset()
+{
+    QPixmap playicon(":/icon/Resourcesbox/button/btplay.png");
+    ui->PB_home_play->setMaximumSize(QSize(ui->PB_home_play->size()));
+    ui->PB_home_play->setFocusPolicy(Qt::NoFocus);
+    ui->PB_home_play->setFlat(true);
+    ui->PB_home_play->setIcon(playicon);
+    ui->PB_home_play->setIconSize(QSize(ui->PB_home_play->size()));
 }
 
 Widget::~Widget()
@@ -39,21 +50,43 @@ void Widget::on_pushButton_8_clicked()
 {
     ui->stackedWidget->setCurrentIndex(2);//跳至頁面2
 
-    range = ui->label_range->text().toInt();
-    amount = ui->label_amount->text().toInt();
-    sec = ui->label_sec->text().toInt();
+    range = ui->label_range->text().toInt();//取得設定值
+    amount = ui->label_amount->text().toInt();//取得設定值
+    sec = ui->label_sec->text().toInt();//取得設定值
 
     game_Enabled = false;
     game_over =false;
 
     set_btn();//設置遊戲按鈕數量
-    QMessageBox msgBox;
-    msgBox.setText(tr("開始!!"));
-    //msgBox.setFont(QFont("",12));
-    msgBox.exec();
-
+    readygame();//預備
     set_game();
     startT();
+}
+
+void Widget::readygame()
+{
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowFlags(Qt::Tool);
+
+    dialog->setStyleSheet(
+                "background-color:qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.9, fx:0.5, fy:0.5, stop:0.5 rgba(25, 255, 131, 208), stop:0.710227 rgba(255, 255, 255, 0));\nborder-style: outset;"
+                );
+                /*
+                "background-color:qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.7, fx:0.5, fy:0.5, stop:0.242938 rgba(62, 255, 41, 250), stop:1 rgba(255, 255, 255, 255));"
+                "border-style: outset;");*/
+    QPushButton *dialog_OK = new QPushButton();
+    dialog_OK->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    dialog_OK->setText(tr("START!!"));
+    dialog->resize(ui->stackedWidget->size().width() /1.5 ,ui->stackedWidget->size().height() / 2);
+    QFont font_mvboli(font_data_mvboli);
+
+    font_mvboli.setPixelSize(ui->stackedWidget->size().width() / 8);
+    dialog_OK->setFont(QFont(font_mvboli));
+
+    QHBoxLayout *lay = new QHBoxLayout(dialog);
+    lay->addWidget(dialog_OK);
+    connect(dialog_OK,SIGNAL(clicked(bool)),dialog,SLOT(close()));
+    dialog->exec();
 }
 
 void Widget::on_pushButton_9_clicked()
@@ -63,6 +96,7 @@ void Widget::on_pushButton_9_clicked()
     Playbutton id;
     id.Reset();
     ans_count = 1;
+    Timer_sec->stop();
     for (int i = 0;i < ui->playbox->count();)//重製按鈕
     {
         Playbutton *button = qobject_cast<Playbutton *>(ui->playbox->itemAt(0)->widget());
@@ -110,8 +144,8 @@ void Widget::set_btn()//設置遊戲按鈕數量
     ui->playbox->setHorizontalSpacing(0);
     ui->BPlaybox->resize(ui->BPlaybox->size().width(),ui->BPlaybox->size().width());
 
-    QFont font_mvboli(font_data_mvboli);
-    font_mvboli.setPixelSize(50);
+    //QFont font_mvboli(font_data_mvboli);
+    //font_mvboli.setPixelSize(50);
 
     for (int i = 0;i < range;i++)
     {
@@ -125,7 +159,7 @@ void Widget::set_btn()//設置遊戲按鈕數量
             button->setSizePolicy(QSizePolicy::Fixed,QSizePolicy::Fixed);
 
             //button->setFont(QFont("",button->size().height()/13));//設定字體字型
-            button->setFont(QFont(font_mvboli));
+            //button->setFont(QFont(font_mvboli));
             ui->playbox->addWidget(button,i,j);//新增button於i行j列
             connect(button, SIGNAL(clicked()), this, SLOT(slotGetNumber()));//信號
         }
@@ -139,6 +173,7 @@ void Widget::set_game()//設置遊戲題目
     qus = type.get_problem(amount);//建立題目數
 
     QPixmap pixmapbox[9];
+    pixmapbox[0].load(":/icon/Resourcesbox/button/bticon00.png");
     pixmapbox[1].load(":/icon/Resourcesbox/button/bticon01.png");
     pixmapbox[2].load(":/icon/Resourcesbox/button/bticon02.png");
     pixmapbox[3].load(":/icon/Resourcesbox/button/bticon03.png");
@@ -153,57 +188,48 @@ void Widget::set_game()//設置遊戲題目
     {
         Playbutton *button = qobject_cast<Playbutton *>(ui->playbox->itemAt(i)->widget());
         button->setMaximumSize(button->size().width(),button->size().height());
+        button->setIcon(pixmapbox[0]);
+        button->setIconSize(QSize(button->size().width() + 10 ,button->size().width() + 10));
         for(int j = 0;j < amount ;j++)
         {
-
             if (*(pose + i) == *(qus + j))
             {
                 //qDebug()<<button->answer();
                 button->answer(*(qus + j));
                 //button->setText(QString("%1").arg(button->answer()));
                 button->setIcon(pixmapbox[button->answer()]);
-                button->setIconSize(QSize(button->size().width()+10,button->size().width()+10));
+                button->setIconSize(QSize(button->size().width() + 10 ,button->size().width() + 10));
             }
         }
     }
 }
 
-void Widget::showans()//顯示答案
-{
-
-
-}
-
 void Widget::startT()
 {
-    Timer_sec = new QTimer(this);
     ui->timerbar->setMaximum(sec * 100);
     Timer_sec->start(10);
     connect(Timer_sec,SIGNAL(timeout()),this,SLOT(TimerSec()));
-
 }
 
 int sec_count;
-
 void Widget::TimerSec()
 {
     int bar = ui->timerbar->value();
-    bar++;
-    ui->timerbar->setValue(bar);
+    ui->timerbar->setValue(bar + 1);
+    QPixmap pixmapbox;
+    pixmapbox.load(":/icon/Resourcesbox/button/bticon00.png");
     if(bar == ui->timerbar->maximum())
     {
-
         for (int i = 0;i < range * range;i++)
         {
             Playbutton *button = qobject_cast<Playbutton *>(ui->playbox->itemAt(i)->widget());
-            button->setIcon(QIcon());
+            button->setIcon(pixmapbox);
+            button->setIconSize(QSize(button->size().width()+10,button->size().width()+10));
         }
-        Timer_sec->stop();
-        game_Enabled = true;
-
-        Timer_play->start(100);
-        connect(Timer_play,SIGNAL(timeout()),this,SLOT(playtime()));
-
+        Timer_sec->stop();//停止準備時間計時器
+        game_Enabled = true;//開始遊戲信號
+        Timer_play->start(100);//遊戲時間計時器
+        connect(Timer_play,SIGNAL(timeout()),this,SLOT(playtime()));////////////s
     }
 }
 
@@ -219,64 +245,38 @@ void Widget::on_pushButton_4_clicked()
 
 void Widget::on_PB_range_DW_clicked()
 {
-    if(ui->label_range->text().toInt() > 1)
+    if(ui->label_range->text().toInt() > 3)
         ui->label_range->setText(QString("%1").arg(ui->label_range->text().toInt() - 1));
 }
-
 void Widget::on_PB_range_UP_clicked()
 {
     if(ui->label_range->text().toInt() < 5)
         ui->label_range->setText(QString("%1").arg(ui->label_range->text().toInt() + 1));
 }
-
-int pix = 30;
 void Widget::on_PB_amount_DW_clicked()
 {
-    if(ui->label_amount->text().toInt() > 1)
+    if(ui->label_amount->text().toInt() > 3)
          ui->label_amount->setText(QString("%1").arg(ui->label_amount->text().toInt() - 1));
-    ui->label_amount->setFont(QFont("PMingLiU", pix-- ,1,false));
-    ui->pushButton_4->setText(QString("%1").arg(pix));
-
 }
-
 void Widget::on_PB_amount_UP_clicked()
 {
     if(ui->label_amount->text().toInt() < 9)
         ui->label_amount->setText(QString("%1").arg(ui->label_amount->text().toInt() + 1));
-    ui->label_amount->setFont(QFont("PMingLiU", pix++ ,1,false));
-    ui->pushButton_4->setText(QString("%1").arg(pix));
 }
-
 void Widget::on_PB_sec_DW_clicked()
 {
     if(ui->label_sec->text().toInt() > 1)
         ui->label_sec->setText(QString("%1").arg(ui->label_sec->text().toInt() - 1));
 }
-
 void Widget::on_PB_sec_UP_clicked()
 {
     if(ui->label_sec->text().toInt() < 5)
         ui->label_sec->setText(QString("%1").arg(ui->label_sec->text().toInt() + 1));
 }
 
-
 void Widget::on_pushButton_2_clicked()
 {
-    QDialog *dialog = new QDialog(this);
-    dialog->setWindowFlags(Qt::Tool);
-    QPushButton *dialog_OK = new QPushButton();
-    QPushButton *dialog_add = new QPushButton("add",nullptr);
-    QPushButton *dialog_less = new QPushButton("less",nullptr);
 
-    dialog->resize(ui->stackedWidget->size().width() / 2
-                  ,ui->stackedWidget->size().height() / 4);
-    QHBoxLayout *lay = new QHBoxLayout(dialog);
-    lay->addWidget(dialog_OK);
-    //lay->addWidget(dialog_add);
-    //lay->addWidget(dialog_less);
-
-    connect(dialog_OK,SIGNAL(clicked(bool)),dialog,SLOT(close()));
-
-    dialog->exec();
 }
+
 

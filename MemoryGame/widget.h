@@ -17,8 +17,9 @@ public:
     explicit Widget(QWidget *parent = 0);
     void set_btn();
     void set_game();
-    void showans();
+    void uiset();
     void startT();
+    void readygame();
     ~Widget();
 
 public slots:
@@ -49,7 +50,6 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_PB_home_play_clicked();
-
 private:
     Ui::Widget *ui;
     QTimer *Timer_play, *Timer_sec;

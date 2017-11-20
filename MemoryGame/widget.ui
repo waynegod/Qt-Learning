@@ -10,6 +10,12 @@
     <height>634</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="font">
    <font>
     <pointsize>24</pointsize>
@@ -37,7 +43,7 @@
    <item row="0" column="0">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="Page_home">
       <layout class="QGridLayout" name="gridLayout_2">
@@ -48,6 +54,9 @@
         <layout class="QVBoxLayout" name="VLayout_ph">
          <property name="spacing">
           <number>10</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
          </property>
          <property name="leftMargin">
           <number>5</number>
@@ -80,7 +89,7 @@
          <item>
           <widget class="QPushButton" name="PB_home_play">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -88,20 +97,37 @@
            <property name="font">
             <font>
              <pointsize>50</pointsize>
+             <kerning>true</kerning>
             </font>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="contextMenuPolicy">
+            <enum>Qt::NoContextMenu</enum>
+           </property>
+           <property name="acceptDrops">
+            <bool>true</bool>
+           </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgba( 255, 255, 255, 0% );
+border-color: rgba( 255, 255, 255, 0% );
+border-style: outset;</string>
            </property>
            <property name="text">
             <string/>
            </property>
-           <property name="icon">
-            <iconset resource="resourcesbox.qrc">
-             <normaloff>:/icon/Resourcesbox/button/btplay.png</normaloff>:/icon/Resourcesbox/button/btplay.png</iconset>
-           </property>
            <property name="iconSize">
             <size>
-             <width>267</width>
+             <width>351</width>
              <height>150</height>
             </size>
+           </property>
+           <property name="flat">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -118,8 +144,21 @@
              <pointsize>50</pointsize>
             </font>
            </property>
+           <property name="mouseTracking">
+            <bool>false</bool>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="contextMenuPolicy">
+            <enum>Qt::NoContextMenu</enum>
+           </property>
+           <property name="acceptDrops">
+            <bool>true</bool>
+           </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">background-color:qradialgradient(spread:reflect, cx:0.5, cy:0.5, radius:0.9, fx:0.5, fy:0.5, stop:0.5 rgba(25, 255, 131, 208), stop:0.710227 rgba(255, 255, 255, 0));
+border-style: outset;</string>
            </property>
            <property name="text">
             <string/>
@@ -165,6 +204,9 @@
             <font>
              <pointsize>50</pointsize>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>結束遊戲</string>
@@ -617,8 +659,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resourcesbox.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
