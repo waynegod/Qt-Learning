@@ -31,9 +31,12 @@ void Widget::uiset()
     QPixmap playicon(":/icon/Resourcesbox/button/btplay.png");
     ui->PB_home_play->setMaximumSize(QSize(ui->PB_home_play->size()));
     ui->PB_home_play->setFocusPolicy(Qt::NoFocus);
+
     ui->PB_home_play->setFlat(true);
     ui->PB_home_play->setIcon(playicon);
-    ui->PB_home_play->setIconSize(QSize(ui->PB_home_play->size()));
+    QSize ss(playicon.size());
+    ss.scale(ui->PB_home_play->size(),Qt::IgnoreAspectRatio);
+    ui->PB_home_play->setIconSize(ss);
 }
 
 Widget::~Widget()
@@ -229,6 +232,7 @@ void Widget::TimerSec()
         Timer_sec->stop();//停止準備時間計時器
         game_Enabled = true;//開始遊戲信號
         Timer_play->start(100);//遊戲時間計時器
+        count_time = 0;
         connect(Timer_play,SIGNAL(timeout()),this,SLOT(playtime()));////////////s
     }
 }
