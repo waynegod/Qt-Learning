@@ -21,7 +21,9 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);//跳至頁面0
     Timer_play = new QTimer();//遊戲時間計時器
-    Timer_sec = new QTimer(this);//準備時間計時器
+    connect(Timer_play,SIGNAL(timeout()),this,SLOT(playtime()));
+    Timer_sec = new QTimer();//準備時間計時器
+    connect(Timer_sec,SIGNAL(timeout()),this,SLOT(TimerSec()));
     font_ID_mvboli = QFontDatabase::addApplicationFont(":/fonts/Resourcesbox/mvboli.ttf");
     font_data_mvboli = QFontDatabase::applicationFontFamilies(font_ID_mvboli).at(0);
 }
@@ -31,12 +33,12 @@ void Widget::uiset()
     QPixmap playicon(":/icon/Resourcesbox/button/btplay.png");
     ui->PB_home_play->setMaximumSize(QSize(ui->PB_home_play->size()));
     ui->PB_home_play->setFocusPolicy(Qt::NoFocus);
-
     ui->PB_home_play->setFlat(true);
+
     ui->PB_home_play->setIcon(playicon);
-    QSize ss(playicon.size());
-    ss.scale(ui->PB_home_play->size(),Qt::IgnoreAspectRatio);
-    ui->PB_home_play->setIconSize(ss);
+    ui->PB_home_play->setIconSize(ui->PB_home_play->size());
+    //ui->PB_home_play->setIconSize(QSize(playicon.size().scaled(ui->PB_home_play->size(),Qt::IgnoreAspectRatio)));
+    qDebug()<<playicon.size();
 }
 
 Widget::~Widget()
@@ -63,7 +65,6 @@ void Widget::on_pushButton_8_clicked()
     set_btn();//設置遊戲按鈕數量
     readygame();//預備
     set_game();
-    startT();
 }
 
 void Widget::readygame()
@@ -95,14 +96,18 @@ void Widget::readygame()
 void Widget::on_pushButton_9_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);//跳至頁面1
+    resetgame();
+}
+
+void Widget::resetgame()//重製遊戲
+{
     ui->timerbar->setValue(0);
-    Playbutton id;
-    id.Reset();
     ans_count = 1;
     Timer_sec->stop();
     for (int i = 0;i < ui->playbox->count();)//重製按鈕
     {
         Playbutton *button = qobject_cast<Playbutton *>(ui->playbox->itemAt(0)->widget());
+        button->Reset();
         delete button;
     }
 }
@@ -110,7 +115,7 @@ void Widget::on_pushButton_9_clicked()
 void Widget::slotGetNumber()//按下遊戲中的按鈕
 {
     Playbutton *button = (Playbutton *)sender();
-    if (button->answer() ==  ans_count)
+    if (button->answer() ==  ans_count && game_Enabled)
     {
         if (ans_count == ui->label_amount->text().toInt())
         {
@@ -128,7 +133,7 @@ void Widget::slotGetNumber()//按下遊戲中的按鈕
 
             switch (chose) {
             case QMessageBox::Yes:
-
+                on_pushButton_9_clicked();
                 break;
             case QMessageBox::Reset:
                 on_pushButton_9_clicked();
@@ -197,24 +202,18 @@ void Widget::set_game()//設置遊戲題目
         {
             if (*(pose + i) == *(qus + j))
             {
-                //qDebug()<<button->answer();
                 button->answer(*(qus + j));
-                //button->setText(QString("%1").arg(button->answer()));
                 button->setIcon(pixmapbox[button->answer()]);
-                button->setIconSize(QSize(button->size().width() + 10 ,button->size().width() + 10));
+                button->setIconSize(QSize(button->size().width() + 20 ,button->size().width() + 20));
             }
         }
     }
-}
-
-void Widget::startT()
-{
+    ui->timerbar->setValue(0);
     ui->timerbar->setMaximum(sec * 100);
     Timer_sec->start(10);
-    connect(Timer_sec,SIGNAL(timeout()),this,SLOT(TimerSec()));
+
 }
 
-int sec_count;
 void Widget::TimerSec()
 {
     int bar = ui->timerbar->value();
@@ -227,13 +226,11 @@ void Widget::TimerSec()
         {
             Playbutton *button = qobject_cast<Playbutton *>(ui->playbox->itemAt(i)->widget());
             button->setIcon(pixmapbox);
-            button->setIconSize(QSize(button->size().width()+10,button->size().width()+10));
         }
         Timer_sec->stop();//停止準備時間計時器
         game_Enabled = true;//開始遊戲信號
         Timer_play->start(100);//遊戲時間計時器
         count_time = 0;
-        connect(Timer_play,SIGNAL(timeout()),this,SLOT(playtime()));////////////s
     }
 }
 
@@ -280,7 +277,6 @@ void Widget::on_PB_sec_UP_clicked()
 
 void Widget::on_pushButton_2_clicked()
 {
-
 }
 
 

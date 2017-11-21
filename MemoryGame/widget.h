@@ -18,8 +18,8 @@ public:
     void set_btn();
     void set_game();
     void uiset();
-    void startT();
     void readygame();
+    void resetgame();
     ~Widget();
 
 public slots:
@@ -50,6 +50,7 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_PB_home_play_clicked();
+
 private:
     Ui::Widget *ui;
     QTimer *Timer_play, *Timer_sec;
